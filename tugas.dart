@@ -1,41 +1,60 @@
-class TNode {
-  int data;
-  TNode? left;
-  TNode? right;
+class STNode<T> {
+  T nodeValue;
+  STNode<T>? left, right, parent;
 
-  TNode(this.data, {this.left, this.right});
+  STNode(this.nodeValue, this.parent);
 }
 
-TNode? copyTree(TNode? t) {
-  if (t == null) return null;
+class BinarySearchTree<T extends Comparable> {
+  STNode<T>? root;
+  int treeSize = 0;
 
-  TNode newNode = TNode(t.data);
-  newNode.left = copyTree(t.left);
-  newNode.right = copyTree(t.right);
+  // Menambahkan node ke dalam BST
+  bool add(T item) {
+    STNode<T>? t = root;
+    STNode<T>? parent;
+    int orderValue = 0;
 
-  return newNode;
-}
+    while (t != null) {
+      parent = t;
+      orderValue = item.compareTo(t.nodeValue);
+      if (orderValue == 0) return false;
+      t = (orderValue < 0) ? t.left : t.right;
+    }
 
-// Fungsi bantu untuk print inorder traversal
-void inorderTraversal(TNode? root) {
-  if (root == null) return;
-  inorderTraversal(root.left);
-  print(root.data);
-  inorderTraversal(root.right);
+    STNode<T> newNode = STNode(item, parent);
+    if (parent == null) {
+      root = newNode;
+    } else if (orderValue < 0) {
+      parent.left = newNode;
+    } else {
+      parent.right = newNode;
+    }
+
+    treeSize++;
+    return true;
+  }
+
+  // Method untuk mendapatkan nilai terkecil
+  T? first() {
+    if (root == null) return null;
+
+    STNode<T>? current = root;
+    while (current!.left != null) {
+      current = current.left;
+    }
+    return current.nodeValue;
+  }
 }
 
 void main() {
-  // Membuat tree contoh
-  TNode root = TNode(1,
-      left: TNode(2, left: TNode(4), right: TNode(5)),
-      right: TNode(3));
+  var bst = BinarySearchTree<int>();
+  bst.add(35);
+  bst.add(18);
+  bst.add(25);
+  bst.add(48);
+  bst.add(20);
 
-  print('Inorder tree asli:');
-  inorderTraversal(root);
-
-  // Salin tree
-  TNode? copiedRoot = copyTree(root);
-
-  print('Inorder tree hasil copy:');
-  inorderTraversal(copiedRoot);
+  print('Tree Size: ${bst.treeSize}');
+  print('Nilai terkecil (first): ${bst.first()}');
 }

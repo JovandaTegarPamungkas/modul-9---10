@@ -1,26 +1,45 @@
-class Node<T> {
-  T data;
-  Node<T>? left;
-  Node<T>? right;
+class STNode<T> {
+  T nodeValue;
+  STNode<T>? left, right, parent;
 
-  Node(this.data);
+  STNode(this.nodeValue, this.parent);
 }
 
-class BinaryTree<T> {
-  Node<T>? root;
+class BinarySearchTree<T extends Comparable> {
+  STNode<T>? root;
+  int treeSize = 0;
 
-  BinaryTree();
+  bool add(T item) {
+    STNode<T>? t = root;
+    STNode<T>? parent;
+    int orderValue = 0;
+
+    while (t != null) {
+      parent = t;
+      orderValue = item.compareTo(t.nodeValue);
+      if (orderValue == 0) return false;
+      t = (orderValue < 0) ? t.left : t.right;
+    }
+
+    STNode<T> newNode = STNode(item, parent);
+    if (parent == null) {
+      root = newNode;
+    } else if (orderValue < 0) {
+      parent.left = newNode;
+    } else {
+      parent.right = newNode;
+    }
+    treeSize++;
+    return true;
+  }
 }
 
 void main() {
-  BinaryTree<int> t = BinaryTree<int>();
-  t.root = Node<int>(10);
-  t.root!.left = Node<int>(20);
-  t.root!.right = Node<int>(30);
-  t.root!.right!.left = Node<int>(4);
-
-  print("Root: ${t.root!.data}");
-  print("Left child: ${t.root!.left!.data}");
-  print("Right child: ${t.root!.right!.data}");
-  print("Right-Left grandchild: ${t.root!.right!.left!.data}");
+  var bst = BinarySearchTree<int>();
+  bst.add(35);
+  bst.add(18);
+  bst.add(25);
+  bst.add(48);
+  bst.add(20);
+  print('Tree Size: ${bst.treeSize}');
 }
