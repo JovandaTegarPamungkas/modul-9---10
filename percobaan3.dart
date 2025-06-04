@@ -1,49 +1,32 @@
-class STNode<T> {
-  T nodeValue;
-  STNode<T>? left, right, parent;
-  STNode(this.nodeValue, this.parent);
+class Node<T> {
+  T key;
+  Node<T>? left, right;
+  Node(this.key);
 }
 
-class BinarySearchTree<T extends Comparable> {
-  STNode<T>? root;
+class BinaryTree<T> {
+  Node<T>? root;
 
-  bool find(T item) {
-    return findNode(item) != null;
+  void _preOrderDisplay(Node<T>? node) {
+    if (node != null) {
+      print('${node.key}');
+      _preOrderDisplay(node.left);
+      _preOrderDisplay(node.right);
+    }
   }
 
-  STNode<T>? findNode(T item) {
-    STNode<T>? t = root;
-    while (t != null) {
-      int cmp = item.compareTo(t.nodeValue);
-      if (cmp == 0) return t;
-      t = (cmp < 0) ? t.left : t.right;
-    }
-    return null;
-  }
-
-  bool add(T item) {
-    STNode<T>? t = root, parent;
-    int orderValue = 0;
-    while (t != null) {
-      parent = t;
-      orderValue = item.compareTo(t.nodeValue);
-      if (orderValue == 0) return false;
-      t = (orderValue < 0) ? t.left : t.right;
-    }
-    STNode<T> newNode = STNode(item, parent);
-    if (parent == null) root = newNode;
-    else if (orderValue < 0) parent.left = newNode;
-    else parent.right = newNode;
-    return true;
+  void printPreorderFromRoot() {
+    _preOrderDisplay(root);
   }
 }
 
 void main() {
-  var bst = BinarySearchTree<int>();
-  bst.add(35);
-  bst.add(18);
-  bst.add(25);
+  var t = BinaryTree<int>();
+  t.root = Node(10);
+  t.root!.left = Node(20);
+  t.root!.right = Node(30);
+  t.root!.right!.left = Node(4);
 
-  print(bst.find(25) ? 'Node ditemukan' : 'Node tidak ditemukan');
-  print(bst.find(100) ? 'Node ditemukan' : 'Node tidak ditemukan');
+  print("Pre Order traversal of binary tree is:");
+  t.printPreorderFromRoot();
 }
